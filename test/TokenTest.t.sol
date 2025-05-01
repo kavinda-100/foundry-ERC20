@@ -48,4 +48,22 @@ contract TokenTest is Test {
             "Bob's balance should be 10 tokens"
         );
     }
+
+    /**
+     * @dev Test the transfer of tokens from bob to alice.
+     */
+    function testTransferFromBobYoAlice() public {
+        // Transfer tokens from bob to alice
+        vm.startPrank(bob); // Set the sender to bob
+        // give bob some tokens to transfer
+        vm.deal(bob, STARTING_BALANCE); // Give bob some ether to pay for gas
+        token.transfer(alice, TRANSFER_AMOUNT); // Transfer 10 tokens from bob to alice
+        vm.stopPrank(); // Stop the prank
+
+        assertEq(
+            token.balanceOf(alice),
+            TRANSFER_AMOUNT,
+            "Alice's balance should be 10 tokens"
+        );
+    }
 }
