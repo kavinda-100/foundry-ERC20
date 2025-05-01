@@ -25,6 +25,21 @@ contract TokenTest is Test {
         token.transfer(bob, TRANSFER_AMOUNT); // Transfer 10 tokens from me to bob
     }
 
+    /**
+     * @dev Test the initial supply of the token.
+     */
+    function testInitialSupply() public view {
+        // Check the initial supply of the token
+        assertEq(
+            token.totalSupply(),
+            INITIAL_SUPPLY,
+            "Initial supply should be 1 million tokens"
+        );
+    }
+
+    /**
+     * @dev Test the transfer of tokens from one account to another.
+     */
     function testBobBalance() public view {
         // Check bob's balance
         assertEq(
