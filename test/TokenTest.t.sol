@@ -66,4 +66,32 @@ contract TokenTest is Test {
             "Alice's balance should be 10 tokens"
         );
     }
+
+    /**
+     * @dev Test the Allowance and approval of tokens.
+     */
+    function testAllowanceWork() public {
+        // Set up the allowance for bob to spend tokens on behalf of alice
+        vm.startPrank(bob); // Set the sender to bob
+        vm.deal(bob, STARTING_BALANCE); // Give bob some ether to pay for gas of 100 tokens
+        token.approve(alice, TRANSFER_AMOUNT); // Approve alice to spend 10 tokens on behalf of bob
+
+        uint256 aliceTransferAmount = 5 ether; // Amount to transfer from bob to alice
+        vm.startPrank(alice); // Set the sender to alice
+        token.transferFrom(bob, alice, aliceTransferAmount); // Transfer 10 tokens from bob to alice
+
+        vm.stopPrank(); // Stop the prank
+
+        // Check the allowance for bob to spend tokens on behalf of alice
+        assertEq(
+            token.balanceOf(alice),
+            aliceTransferAmount,
+            "Alice's balance should be 5 tokens"
+        );
+        assertEq(
+            token.balanceOf(bob),
+            TRANSFER_AMOUNT - aliceTransferAmount,
+            "Bob's balance should be 95 tokens"
+        );
+    }
 }
