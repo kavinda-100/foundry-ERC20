@@ -22,7 +22,7 @@ contract TokenTest is Test {
         // Set up the test accounts
         vm.prank(msg.sender); // Set the sender to the deployer
         // Transfer some tokens to the test accounts
-        token.transfer(bob, TRANSFER_AMOUNT); // Transfer 10 tokens from me to bob
+        token.transfer(bob, STARTING_BALANCE); // Transfer 100 tokens from me to bob
     }
 
     /**
@@ -44,8 +44,8 @@ contract TokenTest is Test {
         // Check bob's balance
         assertEq(
             token.balanceOf(bob),
-            TRANSFER_AMOUNT,
-            "Bob's balance should be 10 tokens"
+            STARTING_BALANCE,
+            "Bob's balance should be 100 tokens/ethers"
         );
     }
 
@@ -55,8 +55,6 @@ contract TokenTest is Test {
     function testTransferFromBobYoAlice() public {
         // Transfer tokens from bob to alice
         vm.startPrank(bob); // Set the sender to bob
-        // give bob some tokens to transfer
-        vm.deal(bob, STARTING_BALANCE); // Give bob some ether to pay for gas
         token.transfer(alice, TRANSFER_AMOUNT); // Transfer 10 tokens from bob to alice
         vm.stopPrank(); // Stop the prank
 
@@ -64,6 +62,11 @@ contract TokenTest is Test {
             token.balanceOf(alice),
             TRANSFER_AMOUNT,
             "Alice's balance should be 10 tokens"
+        );
+        assertEq(
+            token.balanceOf(bob),
+            STARTING_BALANCE - TRANSFER_AMOUNT,
+            "Bob's balance should be 90 tokens"
         );
     }
 
@@ -73,7 +76,6 @@ contract TokenTest is Test {
     function testAllowanceWork() public {
         // Set up the allowance for bob to spend tokens on behalf of alice
         vm.startPrank(bob); // Set the sender to bob
-        vm.deal(bob, STARTING_BALANCE); // Give bob some ether to pay for gas of 100 tokens
         token.approve(alice, TRANSFER_AMOUNT); // Approve alice to spend 10 tokens on behalf of bob
 
         uint256 aliceTransferAmount = 5 ether; // Amount to transfer from bob to alice
@@ -90,7 +92,7 @@ contract TokenTest is Test {
         );
         assertEq(
             token.balanceOf(bob),
-            TRANSFER_AMOUNT - aliceTransferAmount,
+            STARTING_BALANCE - aliceTransferAmount,
             "Bob's balance should be 95 tokens"
         );
     }
