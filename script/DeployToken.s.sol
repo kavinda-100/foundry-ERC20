@@ -9,10 +9,15 @@ contract DeployToken is Script {
     // 1 million tokens = 1,000,000 * 10^18 = 1,000,000 * 1 ether
     uint256 constant INITIAL_SUPPLY = 1000000 ether; // 1 million tokens
 
-    function run() external {
+    function run() external returns (OpenZeppelinToken) {
         vm.startBroadcast();
         // Deploy the OpenZeppelinToken contract with an initial supply of 1 million tokens
-        new OpenZeppelinToken(INITIAL_SUPPLY);
+        OpenZeppelinToken openZeppelinToken = new OpenZeppelinToken(
+            INITIAL_SUPPLY
+        );
         vm.stopBroadcast();
+
+        // Return the deployed contract instance
+        return openZeppelinToken;
     }
 }
